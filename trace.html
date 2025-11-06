@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Trace Your Food{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="text-center mt-4">
+            <h2>Product Traceability</h2>
+            <p class="lead">Enter the Product ID found on the packaging to see its complete journey from the farm to the store, verified by our blockchain ledger.</p>
+        </div>
+        <div class="card mt-4">
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('trace') }}">
+                    <div class="input-group">
+                        <input type="text" class="form-control form-control-lg" id="product_id" name="product_id" placeholder="Enter Product ID..." required>
+                        <button class="btn btn-primary" type="submit">Trace Product</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

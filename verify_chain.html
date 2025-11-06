@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Verify Blockchain Integrity{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="text-center mb-4">
+        <h2>Blockchain Integrity Verification</h2>
+        <p class="lead">This page validates the entire blockchain. It checks that each block's stored `previous_hash` matches the actual computed hash of the block before it. Any mismatch indicates that data has been tampered with.</p>
+    </div>
+
+    {% if is_valid %}
+        <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">✅ Chain is Valid!</h4>
+            <p>The blockchain integrity check has passed. No tampering has been detected. All records are secure.</p>
+        </div>
+    {% else %}
+        <div class="alert alert-danger" role="alert">
+            <h4 class="alert-heading">❌ Chain is Invalid!</h4>
+            <p>Tampering has been detected! The link between blocks is broken. The data below shows where the mismatch occurred.</p>
+        </div>
+    {% endif %}
+
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>Block #</th>
+                    <th>Status</th>
+                    <th>Stored Previous Hash</th>
+                    <th>Actual Previous Hash</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for result in results %}
+                <tr class="{{ 'table-success' if result.is_valid else 'table-danger' }}">
+                    <td>{{ result.block_id }}</td>
+                    <td>
+                        {% if result.is_valid %}
+                            <strong>Valid</strong>
+                        {% else %}
+                            <strong>Invalid</strong>
+                        {% endif %}
+                    </td>
+                    <td style="font-family: monospace; font-size: 0.8rem;">{{ result.stored_hash }}</td>
+                    <td style="font-family: monospace; font-size: 0.8rem;">{{ result.actual_hash }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

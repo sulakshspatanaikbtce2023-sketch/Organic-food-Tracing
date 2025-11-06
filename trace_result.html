@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Trace Result for Product #{{ product.id }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Traceability Report for Product #{{ product.id }}</h2>
+
+    <!-- Product Details Card -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Product Details</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Product Name:</strong> {{ product.product_name }}</p>
+                    <p><strong>Organic Certification ID:</strong> {{ product.organic_certification_id }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Registered by (Farmer):</strong> {{ product.farmer.username }}</p>
+                    <p><strong>Harvest Date:</strong> {{ product.harvest_date.strftime('%Y-%m-%d') }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supply Chain History Timeline -->
+    <h4>Supply Chain Journey</h4>
+    <ul class="list-group">
+        {% for tx in product.transactions %}
+        <li class="list-group-item">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">
+                    {% if tx.action == 'CREATED' %}
+                        🌱 Product Registered
+                    {% elif tx.action == 'SHIPPED_TO_DISTRIBUTOR' %}
+                        🚚 Shipped to Distributor
+                    {% elif tx.action == 'DELIVERED_TO_RETAILER' %}
+                        🛒 Delivered to Retailer
+                    {% elif tx.action == 'RECEIVED_BY_RETAILER' %}
+                        ✅ Received and In Stock
+                    {% endif %}
+                </h5>
+                <small>{{ tx.timestamp.strftime('%Y-%m-%d %H:%M:%S') }} UTC</small>
+            </div>
+            <p class="mb-1">
+                <strong>Performed by:</strong> {{ tx.actor.username }} ({{ tx.actor.role.title() }})
+            </p>
+            <small class="text-muted">Details: {{ tx.details }}</small><br>
+            <small class="text-muted">Recorded in Block #{{ tx.block_id }}</small>
+        </li>
+        {% endfor %}
+    </ul>
+    <div class="text-center mt-4">
+        <a href="{{ url_for('trace') }}" class="btn btn-secondary">Trace Another Product</a>
+    </div>
+</div>
+{% endblock %}

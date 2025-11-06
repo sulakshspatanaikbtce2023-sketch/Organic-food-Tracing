@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}Farmer Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-5">Farmer Dashboard</h1>
+        <p class="lead">Welcome, {{ session.username }}!</p>
+    </div>
+
+    <!-- Add New Product Card -->
+    <div class="card shadow-sm mb-5">
+        <div class="card-header bg-success text-white">
+            <h4 class="mb-0">🌿 Register New Produce</h4>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('add_product') }}">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="product_name" class="form-label">Product Name</label>
+                        <input type="text" class="form-control" id="product_name" name="product_name" placeholder="e.g., Organic Roma Tomatoes" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="organic_certification_id" class="form-label">Organic Certification ID</label>
+                        <input type="text" class="form-control" id="organic_certification_id" name="organic_certification_id" placeholder="e.g., CERT-ORG-101" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="harvest_date" class="form-label">Harvest Date</label>
+                        <input type="date" class="form-control" id="harvest_date" name="harvest_date" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="details" class="form-label">Additional Details (e.g., Farm Location)</label>
+                    <textarea class="form-control" id="details" name="details" rows="2" placeholder="Harvested from Green Valley Farm, Lot B."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Add Product to Chain</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- My Products Table -->
+    <h2 class="mb-4">My Registered Products</h2>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            {% if products %}
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Product Name</th>
+                            <th>Certification ID</th>
+                            <th>Harvest Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                        <tr>
+                            <td>{{ product.id }}</td>
+                            <td>{{ product.product_name }}</td>
+                            <td>{{ product.organic_certification_id }}</td>
+                            <td>{{ product.harvest_date.strftime('%Y-%m-%d') }}</td>
+                            <td>
+                                {% set last_action = product.transactions[-1].action %}
+                                {% if last_action == 'CREATED' %}
+                                    <span class="badge bg-primary">Ready for Transfer</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Transferred</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if last_action == 'CREATED' %}
+                                    <!-- ** THE DEFINITIVE FIX IS HERE ** -->
+                                    <form method="POST" action="{{ url_for('transfer_product', product_id=product.id) }}" class="d-flex">
+                                        <select name="distributor_id" class="form-select form-select-sm me-2" required>
+                                            <option value="" disabled selected>Select Distributor...</option>
+                                            {% for distributor in distributors %}
+                                            <option value="{{ distributor.id }}">{{ distributor.username }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <button type="submit" class="btn btn-sm btn-outline-success">Ship</button>
+                                    </form>
+                                {% else %}
+                                    <small class="text-muted">Action Taken</small>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center p-4">
+                <p class="text-muted">You have not registered any products yet.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

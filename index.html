@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Homepage - Organic Food Chain{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto text-center">
+            <h1 class="display-4 fw-bold">Trust in Every Bite.</h1>
+            <p class="lead mb-4 text-muted">
+                Welcome to the future of food safety. Our system uses blockchain technology to provide a
+                secure, transparent, and unchangeable record of your food's journey from the farm to your table.
+                Verify the authenticity and integrity of your organic products with a single click.
+            </p>
+            <hr class="my-4">
+            <p class="fs-5">
+                Trace a product to see its full history or join our network to bring transparency to your supply chain.
+            </p>
+            <a class="btn btn-primary btn-lg mt-3" href="{{ url_for('trace') }}" role="button">Trace a Product</a>
+            <a class="btn btn-secondary btn-lg mt-3" href="{{ url_for('register') }}" role="button">Register Your Business</a>
+        </div>
+    </div>
+
+    <div class="row mt-5 pt-5">
+        <div class="col-md-4 text-center">
+            <div class="card p-3">
+                <div class="card-body">
+                    <h3 class="card-title">🌱 Farm to Table</h3>
+                    <p class="card-text">Farmers can register their produce, creating the first link in a secure, verifiable chain of custody.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 text-center">
+            <div class="card p-3">
+                <div class="card-body">
+                    <h3 class="card-title">🚚 Secure Logistics</h3>
+                    <p class="card-text">Distributors update the product's status at every step, with each transaction permanently recorded on the blockchain.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 text-center">
+            <div class="card p-3">
+                <div class="card-body">
+                    <h3 class="card-title">🛒 Consumer Confidence</h3>
+                    <p class="card-text">Retailers and consumers can instantly trace a product's full history, ensuring authenticity and quality.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
